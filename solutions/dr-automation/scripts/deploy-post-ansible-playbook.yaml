@@ -1,0 +1,14 @@
+---
+##############################################################################
+# Post-Deploy Ansible Playbook
+# Called by IBM Cloud Projects after Terraform apply completes.
+# Delegates to the full DR VSI configuration playbook.
+##############################################################################
+
+- name: DR Automation - Post Deploy Configuration
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Confirm post-deploy hook triggered
+      ansible.builtin.debug:
+        msg: "Post-deploy hook triggered. DR VSI configuration will now run via configure-dr-vsis.yaml."

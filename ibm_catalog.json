@@ -1,0 +1,351 @@
+{
+    "products": [
+        {
+            "name": "dr-automation-vpc-vsi",
+            "label": "DR Automation for IBM Cloud VPC VSIs",
+            "product_kind": "solution",
+            "tags": [
+                "network",
+                "network_vpc",
+                "resiliency",
+                "disaster_recovery",
+                "devops",
+                "gitops",
+                "terraform",
+                "ansible"
+            ],
+            "keywords": [
+                "disaster recovery",
+                "DR automation",
+                "VPC",
+                "VSI",
+                "Terraform",
+                "GitOps",
+                "ArgoCD",
+                "Ansible",
+                "GitHub Actions",
+                "failover",
+                "RTO",
+                "RPO",
+                "warm standby",
+                "IBM Cloud"
+            ],
+            "short_description": "Automated Disaster Recovery for IBM Cloud VPC Virtual Server Instances using Terraform, Ansible, ArgoCD, and GitHub Actions.",
+            "long_description": "This deployable architecture implements a fully automated Disaster Recovery (DR) solution for IBM Cloud VPC Virtual Server Instances (VSIs) using a modern Terraform + GitOps stack.\n\nThe architecture provisions warm standby VSIs in a secondary IBM Cloud region and orchestrates failover through a GitHub Actions pipeline. Terraform manages infrastructure-as-code and stores state in IBM Cloud Object Storage. Ansible configures DR VSIs post-provisioning and activates workloads during a failover event. ArgoCD provides GitOps-driven application synchronization to ensure the DR environment stays in sync with the primary. Automated health checks continuously monitor the primary region and trigger the failover pipeline when thresholds are breached.\n\nThis is the approach used by many hyperscalers for internal DR and is fully cloud-native, multi-region, and auditable through Git history.",
+            "offering_docs_url": "https://raw.githubusercontent.com/IBM/dr-automation-vpc-vsi/main/README.md",
+            "offering_icon_url": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gU3ZnIFZlY3RvciBJY29ucyA6IGh0dHA6Ly93d3cub25saW5ld2ViZm9udHMuY29tL2ljb24gLS0+DQo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTAwMCAxMDAwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAxMDAwIDEwMDAiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+PHBhdGggZD0iTTUwMCwxMEMxMjkuOCwxMCwxMCwxMjkuOCwxMCw1MDBzMTE5LjgsNDkwLDQ5MCw0OTBzNDkwLTExOS44LDQ5MC00OTBTODcwLjIsMTAsNTAwLDEweiBNNTAwLDkwMGMtMjIwLjksMC00MDAtMTc5LjEtNDAwLTQwMFMyNzkuMSwxMDAsNTAwLDEwMHM0MDAsMTc5LjEsNDAwLDQwMFM3MjAuOSw5MDAsNTAwLDkwMHoiLz48L2c+DQo8L3N2Zz4=",
+            "module_info": {},
+            "support_details": "Community supported. No official IBM support is given for this demonstration deployable architecture.",
+            "flavors": [
+                {
+                    "label": "Standard",
+                    "name": "standard",
+                    "install_type": "fullstack",
+                    "working_directory": "solutions/dr-automation",
+                    "usage_template": "module \"dr_automation\" {\n  source                        = \"https://cm.globalcatalog.cloud.ibm.com/api/v1-beta/offering/source//${{workingDirectory}}?archive=tgz&catalogID=${{catalogID}}&flavor=${{flavor}}&kind=${{kind}}&name=${{name}}&version=${{version}}\"\n  ibmcloud_api_key              = var.ibmcloud_api_key\n  prefix                        = var.prefix\n  primary_region                = var.primary_region\n  dr_region                     = var.dr_region\n  primary_vpc_name              = var.primary_vpc_name\n  ssh_public_key                = var.ssh_public_key\n  ssh_private_key               = var.ssh_private_key\n  dr_vsi_count                  = var.dr_vsi_count\n  rto_minutes                   = var.rto_minutes\n  rpo_minutes                   = var.rpo_minutes\n}\n\n",
+                    "scripts": [
+                        {
+                            "type": "ansible",
+                            "short_description": "Configure DR VSIs with GitOps toolchain (ArgoCD, Ansible agent, health checks)",
+                            "path": "solutions/dr-automation/scripts/deploy-post-ansible-playbook.yaml",
+                            "stage": "post",
+                            "action": "deploy"
+                        }
+                    ],
+                    "compliance": {
+                        "authority": "scc-v3",
+                        "controls": [
+                            {
+                                "profile": {
+                                    "name": "IBM Cloud Framework for Financial Services",
+                                    "version": "1.7.0"
+                                },
+                                "names": [
+                                    "CP-10",
+                                    "CP-6",
+                                    "CP-7",
+                                    "SI-12",
+                                    "SC-6"
+                                ]
+                            }
+                        ]
+                    },
+                    "configuration": [
+                        {
+                            "key": "ibmcloud_api_key",
+                            "required": true,
+                            "type": "password"
+                        },
+                        {
+                            "key": "prefix",
+                            "required": true,
+                            "type": "string"
+                        },
+                        {
+                            "key": "resource_group",
+                            "required": true,
+                            "type": "string"
+                        },
+                        {
+                            "key": "primary_region",
+                            "required": true,
+                            "type": "string"
+                        },
+                        {
+                            "key": "dr_region",
+                            "required": true,
+                            "type": "string"
+                        },
+                        {
+                            "key": "primary_vpc_name",
+                            "required": true,
+                            "type": "string"
+                        },
+                        {
+                            "key": "ssh_public_key",
+                            "required": true,
+                            "type": "string"
+                        },
+                        {
+                            "key": "ssh_private_key",
+                            "required": true,
+                            "type": "password",
+                            "custom_config": {
+                                "grouping": "deployment",
+                                "original_grouping": "deployment",
+                                "type": "multiline_secure_value"
+                            }
+                        },
+                        {
+                            "key": "dr_vsi_count",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "2"
+                        },
+                        {
+                            "key": "dr_mode",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "warm"
+                        },
+                        {
+                            "key": "rto_minutes",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "30"
+                        },
+                        {
+                            "key": "rpo_minutes",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "15"
+                        },
+                        {
+                            "key": "enable_argocd",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "true"
+                        },
+                        {
+                            "key": "argocd_repo_url",
+                            "required": false,
+                            "type": "string",
+                            "default_value": ""
+                        },
+                        {
+                            "key": "enable_monitoring",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "true"
+                        },
+                        {
+                            "key": "vsi_profile",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "cx2-2x4"
+                        },
+                        {
+                            "key": "vsi_image",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "ibm-ubuntu-22-04-5-minimal-amd64-1"
+                        },
+                        {
+                            "key": "dr_subnet_cidrs",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "[\"10.240.64.0/24\", \"10.240.65.0/24\", \"10.240.66.0/24\"]"
+                        },
+                        {
+                            "key": "tags",
+                            "required": false,
+                            "type": "string",
+                            "default_value": "[\"dr-automation\", \"vpc-vsi\", \"gitops\"]"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "key": "prefix",
+                            "description": "Prefix used to name all DR resources in this deployment."
+                        },
+                        {
+                            "key": "primary_region",
+                            "description": "IBM Cloud region of the primary production workloads."
+                        },
+                        {
+                            "key": "dr_region",
+                            "description": "IBM Cloud region designated as the Disaster Recovery target."
+                        },
+                        {
+                            "key": "dr_vpc_id",
+                            "description": "ID of the DR VPC created in the DR region."
+                        },
+                        {
+                            "key": "dr_vpc_name",
+                            "description": "Name of the DR VPC."
+                        },
+                        {
+                            "key": "dr_subnet_ids",
+                            "description": "List of DR subnet IDs across availability zones."
+                        },
+                        {
+                            "key": "dr_vsi_ids",
+                            "description": "List of warm standby VSI instance IDs in the DR region."
+                        },
+                        {
+                            "key": "dr_vsi_ips",
+                            "description": "Primary private IP addresses of all DR VSIs."
+                        },
+                        {
+                            "key": "terraform_state_bucket",
+                            "description": "COS bucket storing Terraform state for the GitOps pipeline."
+                        },
+                        {
+                            "key": "ansible_inventory_bucket",
+                            "description": "COS bucket storing Ansible dynamic inventory files."
+                        },
+                        {
+                            "key": "monitoring_instance_id",
+                            "description": "CRN of the IBM Cloud Monitoring instance."
+                        },
+                        {
+                            "key": "dr_mode",
+                            "description": "The DR mode configured for this deployment (warm or cold)."
+                        },
+                        {
+                            "key": "rto_minutes",
+                            "description": "Configured Recovery Time Objective in minutes."
+                        },
+                        {
+                            "key": "rpo_minutes",
+                            "description": "Configured Recovery Point Objective in minutes."
+                        }
+                    ],
+                    "iam_permissions": [
+                        {
+                            "role_crns": [
+                                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                                "crn:v1:bluemix:public:iam::::role:Administrator"
+                            ],
+                            "service_name": "is.vpc"
+                        },
+                        {
+                            "role_crns": [
+                                "crn:v1:bluemix:public:iam::::serviceRole:Manager"
+                            ],
+                            "service_name": "cloud-object-storage"
+                        },
+                        {
+                            "role_crns": [
+                                "crn:v1:bluemix:public:iam::::serviceRole:Manager"
+                            ],
+                            "service_name": "sysdig-monitor"
+                        },
+                        {
+                            "role_crns": [
+                                "crn:v1:bluemix:public:iam::::role:Administrator"
+                            ],
+                            "service_name": "iam-identity"
+                        },
+                        {
+                            "role_crns": [
+                                "crn:v1:bluemix:public:iam::::serviceRole:Manager"
+                            ],
+                            "service_name": "kms"
+                        }
+                    ],
+                    "architecture": {
+                        "features": [
+                            {
+                                "title": "Multi-region DR (Primary + DR VPC)",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "Warm standby VSIs in DR region",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "Terraform state in Cloud Object Storage",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "GitHub Actions DR pipeline",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "Ansible post-deploy configuration",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "ArgoCD GitOps sync",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "Automated health checks with auto-trigger",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "IBM Cloud Monitoring integration",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "Configurable RTO and RPO targets",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "Financial Services compliance controls",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "Scheduled weekly DR validation tests",
+                                "description": "Yes"
+                            },
+                            {
+                                "title": "Multi-zone spread within DR region",
+                                "description": "Yes"
+                            }
+                        ],
+                        "diagrams": [
+                            {
+                                "diagram": {
+                                    "caption": "DR Automation - Terraform + GitOps Architecture",
+                                    "url": "https://raw.githubusercontent.com/IBM/dr-automation-vpc-vsi/main/reference-architecture/dr-automation-arch.svg",
+                                    "metadata": []
+                                },
+                                "description": "This architecture deploys warm standby VSIs in a secondary IBM Cloud VPC region. A GitHub Actions pipeline orchestrates the full DR lifecycle: Terraform provisions and manages DR infrastructure using state stored in IBM Cloud Object Storage; Ansible configures VSIs and activates workloads on failover; ArgoCD syncs application manifests from Git to keep DR in lockstep with production. Automated health checks run at the configured RPO interval and trigger failover when the primary region becomes unreachable. The entire DR workflow is auditable through Git history and IBM Cloud Activity Tracker."
+                            }
+                        ]
+                    },
+                    "change_notices": {
+                        "new": [
+                            {
+                                "title": "Initial Release",
+                                "description": "Full Terraform + GitOps DR automation stack for IBM Cloud VPC VSIs. Includes GitHub Actions pipeline, Ansible playbooks, ArgoCD integration, and IBM Cloud Monitoring health checks."
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
